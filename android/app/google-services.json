@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "155026812699",
+    "project_id": "loja-virtual-fec4c",
+    "storage_bucket": "loja-virtual-fec4c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155026812699:android:b627c8ff0fbba8ef68adbe",
+        "android_client_info": {
+          "package_name": "br.com.prioli.loja_virtual"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "155026812699-m32ttf2d8jsu0hhfgverjsh6tgtl9ftc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2NxoBe7nYC26XGThzh0Fk8RlzpttwqCQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "155026812699-m32ttf2d8jsu0hhfgverjsh6tgtl9ftc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
