@@ -68,10 +68,23 @@ class LoginScreen extends StatelessWidget {
                     onPressed: () {
                       if (formKey.currentState?.validate() ?? false) {
                         context.read<UserManager>().signIn(
-                              User(
+                              user: User(
                                 emailController.text,
                                 passwordController.text,
                               ),
+                              onFail: (e) {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  content: Text(
+                                    e as String,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ));
+                              },
+                              onSuccess: () {
+                                // TODO: FECHAR TELA DE LOGIN
+                              },
                             );
                       }
                     },
