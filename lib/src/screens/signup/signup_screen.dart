@@ -37,7 +37,7 @@ class SignUpScreen extends StatelessWidget {
                       return null;
                     }
                   },
-                  onSaved: (name) => user.name = name!,
+                  onSaved: (name) => user.name = name,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
