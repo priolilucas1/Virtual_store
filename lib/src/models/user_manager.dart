@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:loja_virtual/src/helpers/firebase_errors.dart';
 import 'package:loja_virtual/src/models/user.dart' as us;
 
@@ -23,8 +24,8 @@ class UserManager extends ChangeNotifier {
     loading = true;
     try {
       final UserCredential result = await auth.signInWithEmailAndPassword(
-        email: user.email,
-        password: user.password,
+        email: user.email!,
+        password: user.password!,
       );
 
       this.user = result.user!;
@@ -37,6 +38,27 @@ class UserManager extends ChangeNotifier {
     loading = false;
   }
 
+  Future<void> signUp({
+    required us.User user,
+    required Function onSuccess,
+    required Function onFail,
+  }) async {
+    loading = true;
+    try {
+      final UserCredential result = await auth.createUserWithEmailAndPassword(
+        email: user.email!,
+        password: user.password!,
+      );
+
+      this.user = result.user!;
+
+      onSuccess();
+    } on PlatformException catch (e) {
+      onFail(getErrorString(e.code));
+    }
+    loading = false;
+  }
+
   set loading(bool value) {
     _loading = value;
     notifyListeners();
@@ -46,6 +68,7 @@ class UserManager extends ChangeNotifier {
     final User currentUser = auth.currentUser!;
 
     user = currentUser;
+    print(user.uid);
     notifyListeners();
   }
 }
