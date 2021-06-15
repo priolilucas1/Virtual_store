@@ -1,7 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:loja_virtual/src/helpers/firebase_errors.dart';
+
 import 'package:loja_virtual/src/models/user.dart' as us;
 
 class UserManager extends ChangeNotifier {
@@ -10,11 +12,13 @@ class UserManager extends ChangeNotifier {
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  late User user;
+  us.User? user;
 
   bool _loading = false;
   bool get loading => _loading;
+  bool get isLoggedIn => user != null;
 
   Future<void> signIn({
     required us.User user,
@@ -28,7 +32,7 @@ class UserManager extends ChangeNotifier {
         password: user.password!,
       );
 
-      this.user = result.user!;
+      await _loadCurrentUser(firebaseUser: result.user);
 
       onSuccess();
     } on FirebaseAuthException catch (e) {
@@ -50,13 +54,22 @@ class UserManager extends ChangeNotifier {
         password: user.password!,
       );
 
-      this.user = result.user!;
+      user.id = result.user?.uid;
+      this.user = user;
+
+      await user.saveData();
 
       onSuccess();
-    } on PlatformException catch (e) {
+    } on FirebaseAuthException catch (e) {
       onFail(getErrorString(e.code));
     }
     loading = false;
+  }
+
+  void signOut() {
+    auth.signOut();
+    user = null;
+    notifyListeners();
   }
 
   set loading(bool value) {
@@ -64,11 +77,13 @@ class UserManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _loadCurrentUser() async {
-    final User currentUser = auth.currentUser!;
+  Future<void> _loadCurrentUser({User? firebaseUser}) async {
+    final User? currentUser = firebaseUser ?? auth.currentUser;
 
-    user = currentUser;
-    print(user.uid);
+    final DocumentSnapshot docUser =
+        await firestore.collection('users').doc(currentUser?.uid).get();
+
+    user = us.User.fromDocument(docUser);
     notifyListeners();
   }
 }
