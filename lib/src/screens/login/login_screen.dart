@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:loja_virtual/src/helpers/validators.dart';
 import 'package:loja_virtual/src/models/user_manager.dart';
-import 'package:loja_virtual/src/models/user.dart';
+import 'package:loja_virtual/src/models/user.dart' as us;
 
 class LoginScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -47,7 +47,7 @@ class LoginScreen extends StatelessWidget {
                       keyboardType: TextInputType.emailAddress,
                       autocorrect: false,
                       validator: (email) {
-                        if (!emailValid(email ?? 'null@null.com')) {
+                        if (!emailValid(email ?? '')) {
                           return 'Email inválido';
                         }
                       },
@@ -85,15 +85,15 @@ class LoginScreen extends StatelessWidget {
                             : () {
                                 if (formKey.currentState?.validate() ?? false) {
                                   userManager.signIn(
-                                    user: User(
-                                      emailController.text,
-                                      passwordController.text,
+                                    user: us.User(
+                                      email: emailController.text,
+                                      password: passwordController.text,
                                     ),
                                     onFail: (e) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                         content: Text(
-                                          e as String,
+                                          'Falha no login: ${e as String}',
                                           style: const TextStyle(fontSize: 18),
                                         ),
                                         backgroundColor: Colors.red,
