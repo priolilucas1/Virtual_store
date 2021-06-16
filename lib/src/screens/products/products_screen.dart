@@ -12,26 +12,63 @@ class ProductsScreen extends StatelessWidget {
     return Scaffold(
       drawer: CustomDrawer(),
       appBar: AppBar(
-        title: const Text('Produtos'),
+        title: Consumer<ProductManager>(
+          builder: (_, productManager, __) {
+            if (productManager.search.isNotEmpty) {
+              return LayoutBuilder(builder: (_, constraints) {
+                return GestureDetector(
+                  onTap: () async {
+                    final search = await showDialog<String>(
+                      context: context,
+                      builder: (_) => SearchDialog(productManager.search),
+                    );
+
+                    if (search != null) {
+                      productManager.search = search;
+                    }
+                  },
+                  child: SizedBox(
+                    width: constraints.biggest.width,
+                    child: Text(
+                      productManager.search,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              });
+            } else {
+              return const Text('Produtos');
+            }
+          },
+        ),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () async {
-              final search = await showDialog<String>(
-                context: context,
-                builder: (_) => SearchDialog(),
-              );
+          Consumer<ProductManager>(
+            builder: (_, productManager, __) {
+              if (productManager.search.isEmpty) {
+                return IconButton(
+                  onPressed: () async {
+                    final search = await showDialog<String>(
+                      context: context,
+                      builder: (_) => SearchDialog(productManager.search),
+                    );
 
-              if (search != null) {
-                context.read<ProductManager>().search = search;
+                    if (search != null) {
+                      productManager.search = search;
+                    }
+                  },
+                  icon: const Icon(Icons.search),
+                );
+              } else {
+                return IconButton(
+                  onPressed: () async {
+                    productManager.search = '';
+                  },
+                  icon: const Icon(Icons.close),
+                );
               }
             },
-            icon: const Icon(Icons.search),
           ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.add),
-          )
         ],
       ),
       body: Consumer<ProductManager>(
