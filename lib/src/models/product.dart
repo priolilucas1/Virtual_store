@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:loja_virtual/src/helpers/firebase_errors.dart';
 import 'package:loja_virtual/src/models/item_size.dart';
 
-class Product {
+class Product extends ChangeNotifier {
   Product.fromDocument(DocumentSnapshot document) {
     try {
       if (document.exists) {
@@ -24,4 +25,12 @@ class Product {
   late String description;
   late List<String> images;
   List<ItemSize> sizes = [];
+
+  ItemSize? _selectedSize;
+
+  ItemSize? get selectedSize => _selectedSize;
+  set selectedSize(ItemSize? value) {
+    _selectedSize = value;
+    notifyListeners();
+  }
 }
