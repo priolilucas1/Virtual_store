@@ -2,6 +2,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:loja_virtual/src/models/product.dart';
 
+import 'components/size_widget.dart';
+
 class ProductScreen extends StatelessWidget {
   const ProductScreen(this.product);
 
@@ -13,7 +15,7 @@ class ProductScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(product.name!),
+        title: Text(product.name),
         centerTitle: true,
       ),
       backgroundColor: Colors.white,
@@ -28,7 +30,7 @@ class ProductScreen extends StatelessWidget {
               autoPlay: true,
               autoPlayInterval: const Duration(seconds: 15),
             ),
-            items: product.images?.map((url) {
+            items: product.images.map((url) {
               return Builder(builder: (BuildContext context) {
                 return Image(
                   image: NetworkImage(url),
@@ -42,7 +44,7 @@ class ProductScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  product.name!,
+                  product.name,
                   style: const TextStyle(
                       fontSize: 20, fontWeight: FontWeight.w600),
                 ),
@@ -75,8 +77,23 @@ class ProductScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  product.description!,
+                  product.description,
                   style: const TextStyle(fontSize: 16),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 18, bottom: 8),
+                  child: Text(
+                    'Tamanhos',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                Wrap(
+                  children: product.sizes.map((size) {
+                    return SizeWidget(size);
+                  }).toList(),
                 ),
               ],
             ),

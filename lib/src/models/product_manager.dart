@@ -29,7 +29,7 @@ class ProductManager extends ChangeNotifier {
       filteredProducts.addAll(
         allProducts.where(
           (product) =>
-              product.name!.toLowerCase().contains(search.toLowerCase()),
+              product.name.toLowerCase().contains(search.toLowerCase()),
         ),
       );
     }
