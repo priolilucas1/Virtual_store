@@ -5,9 +5,9 @@ import 'package:loja_virtual/src/models/product.dart';
 
 class CartProduct extends ChangeNotifier {
   CartProduct.fromProduct(this.product) {
-    productId = product.id;
+    productId = product!.id;
     quantity = 1;
-    size = product.selectedSize!.name;
+    size = product?.selectedSize?.name;
   }
 
   CartProduct.fromDocument(DocumentSnapshot document) {
@@ -16,28 +16,32 @@ class CartProduct extends ChangeNotifier {
     quantity = document['quantity'] as int;
     size = document['size'] as String;
 
-    firestore
-        .doc('products/$productId')
-        .get()
-        .then((doc) => product = Product.fromDocument(doc));
+    firestore.doc('products/$productId').get().then((doc) {
+      product = Product.fromDocument(doc);
+      notifyListeners();
+    });
   }
 
-  late String id;
+  late String? id;
 
-  late String productId;
+  late String? productId;
   late int quantity;
-  late String size;
+  late String? size;
 
-  late Product product;
+  late Product? product;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  ItemSize get itemSize {
-    return product.findSize(size);
+  ItemSize? get itemSize {
+    if (product == null) return null;
+    return product!.findSize(size);
   }
 
   num get unitPrice {
-    return itemSize.price;
+    if (product == null) return 0;
+    return itemSize!.price;
   }
+
+  num get totalPrice => unitPrice * quantity;
 
   Map<String, dynamic> toCartItemMap() {
     return {
@@ -49,6 +53,13 @@ class CartProduct extends ChangeNotifier {
 
   bool stackable(Product product) {
     return product.id == productId && product.selectedSize!.name == size;
+  }
+
+  bool get hasStock {
+    final size = itemSize;
+
+    if (size == null) return false;
+    return size.stock >= quantity;
   }
 
   void increment() {
