@@ -20,13 +20,12 @@ class CartProduct {
         .then((doc) => product = Product.fromDocument(doc));
   }
 
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-  late Product product;
-
   late String productId;
   late int quantity;
   late String size;
+
+  late Product product;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   ItemSize get itemSize {
     return product.findSize(size);
@@ -42,5 +41,9 @@ class CartProduct {
       'quantity': quantity,
       'size': size,
     };
+  }
+
+  bool stackable(Product product) {
+    return product.id == productId && product.selectedSize!.name == size;
   }
 }
