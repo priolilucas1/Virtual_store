@@ -11,6 +11,8 @@ class CartManager extends ChangeNotifier {
 
   User? user;
 
+  num productsPrice = 0.0;
+
   void updateUser(UserManager userManager) {
     user = userManager.user;
     items.clear();
@@ -29,7 +31,7 @@ class CartManager extends ChangeNotifier {
         .toList();
   }
 
-  void addToCart(Product product) {
+  Future<void> addToCart(Product product) async {
     try {
       final entity = items.firstWhere((p) => p.stackable(product));
       entity.increment();
@@ -38,9 +40,11 @@ class CartManager extends ChangeNotifier {
       cartProduct.addListener(_onItemUpdated);
 
       items.add(cartProduct);
-      user!.cartReference
+      await user!.cartReference
           .add(cartProduct.toCartItemMap())
           .then((doc) => cartProduct.id = doc.id);
+
+      _onItemUpdated();
     }
 
     notifyListeners();
@@ -49,20 +53,43 @@ class CartManager extends ChangeNotifier {
   void removeFromCart(CartProduct cartProduct) {
     items.removeWhere((product) => product.id == cartProduct.id);
     user!.cartReference.doc(cartProduct.id).delete();
+
     cartProduct.removeListener(_onItemUpdated);
     notifyListeners();
   }
 
   void _onItemUpdated() {
-    for (final cartProduct in items) {
+    productsPrice = 0.0;
+
+    for (int i = 0; i < items.length; i++) {
+      final cartProduct = items[i];
+
       if (cartProduct.quantity == 0) {
         removeFromCart(cartProduct);
+        i--;
+        continue;
       }
+
+      productsPrice += cartProduct.totalPrice;
+
       _updateCartProduct(cartProduct);
     }
+
+    notifyListeners();
   }
 
   void _updateCartProduct(CartProduct cartProduct) {
-    user!.cartReference.doc(cartProduct.id).update(cartProduct.toCartItemMap());
+    if (cartProduct.id != null) {
+      user!.cartReference
+          .doc(cartProduct.id)
+          .update(cartProduct.toCartItemMap());
+    }
+  }
+
+  bool get isCartValid {
+    for (final cartProduct in items) {
+      if (!cartProduct.hasStock) return false;
+    }
+    return true;
   }
 }
