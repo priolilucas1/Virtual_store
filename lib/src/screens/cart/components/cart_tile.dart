@@ -23,7 +23,7 @@ class CartTile extends StatelessWidget {
               SizedBox(
                 height: 80,
                 width: 80,
-                child: Image.network(cartProduct.product.images[0]),
+                child: Image.network(cartProduct.product!.images[0]),
               ),
               Expanded(
                 child: Padding(
@@ -32,7 +32,7 @@ class CartTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        cartProduct.product.name,
+                        cartProduct.product!.name,
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -48,14 +48,28 @@ class CartTile extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Text(
-                        'R\$ ${cartProduct.unitPrice.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          color: primaryColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
+                      Consumer<CartProduct>(
+                        builder: (_, cartProduct, __) {
+                          if (cartProduct.hasStock) {
+                            return Text(
+                              'R\$ ${cartProduct.unitPrice.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                color: primaryColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
+                          } else {
+                            return const Text(
+                              'Sem estoque disponível',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 12,
+                              ),
+                            );
+                          }
+                        },
+                      ),
                     ],
                   ),
                 ),
