@@ -16,7 +16,7 @@ class CartManager {
 
     if (user != null) {
       _loadCartItems();
-    } else {}
+    }
   }
 
   Future<void> _loadCartItems() async {
@@ -28,9 +28,14 @@ class CartManager {
   }
 
   void addToCart(Product product) {
-    final cartProduct = CartProduct.fromProduct(product);
+    try {
+      final entity = items.firstWhere((p) => p.stackable(product));
+      entity.quantity++;
+    } catch (e) {
+      final cartProduct = CartProduct.fromProduct(product);
 
-    items.add(cartProduct);
-    user!.cartReference.add(cartProduct.toCartItemMap());
+      items.add(cartProduct);
+      user!.cartReference.add(cartProduct.toCartItemMap());
+    }
   }
 }
