@@ -16,6 +16,7 @@ class CartManager extends ChangeNotifier {
   void updateUser(UserManager userManager) {
     user = userManager.user;
     items.clear();
+    productsPrice = 0.0;
 
     if (user != null) {
       _loadCartItems();
