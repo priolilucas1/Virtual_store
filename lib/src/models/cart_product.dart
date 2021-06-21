@@ -4,18 +4,16 @@ import 'package:loja_virtual/src/models/item_size.dart';
 import 'package:loja_virtual/src/models/product.dart';
 
 class CartProduct extends ChangeNotifier {
-  CartProduct.fromProduct(this.product) {
-    productId = product!.id;
-    quantity = 1;
-    size = product?.selectedSize?.name;
-  }
+  CartProduct.fromProduct(this.product)
+      : productId = product!.id,
+        quantity = 1,
+        size = product.selectedSize?.name;
 
-  CartProduct.fromDocument(DocumentSnapshot document) {
-    id = document.id;
-    productId = document['pid'] as String;
-    quantity = document['quantity'] as int;
-    size = document['size'] as String;
-
+  CartProduct.fromDocument(DocumentSnapshot document)
+      : id = document.id,
+        productId = document['pid'] as String,
+        quantity = document['quantity'] as int,
+        size = document['size'] as String {
     firestore.doc('products/$productId').get().then((doc) {
       product = Product.fromDocument(doc);
       notifyListeners();
@@ -24,11 +22,11 @@ class CartProduct extends ChangeNotifier {
 
   late String? id;
 
-  late String? productId;
+  final String? productId;
+  final String? size;
   late int quantity;
-  late String? size;
 
-  late Product? product;
+  Product? product;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   ItemSize? get itemSize {
