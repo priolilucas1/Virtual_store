@@ -54,7 +54,7 @@ class UserManager extends ChangeNotifier {
         password: user.password!,
       );
 
-      user.id = result.user?.uid;
+      user.id = result.user!.uid;
       this.user = user;
 
       await user.saveData();
