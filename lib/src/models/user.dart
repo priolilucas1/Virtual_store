@@ -9,13 +9,10 @@ class User {
   String? password;
   String? confirmPassword;
 
-  User.fromDocument(DocumentSnapshot document) {
-    if (document.exists) {
-      id = document.id;
-      name = document['name'] as String;
-      email = document['email'] as String;
-    }
-  }
+  User.fromDocument(DocumentSnapshot document)
+      : id = document.id,
+        name = document['name'] as String,
+        email = document['email'] as String;
 
   DocumentReference get firestoreRef =>
       FirebaseFirestore.instance.doc('users/$id');
