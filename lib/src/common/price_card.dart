@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loja_virtual/src/models/cart_manager.dart';
+import 'package:loja_virtual/src/models/user_manager.dart';
 import 'package:provider/provider.dart';
 
 class PriceCard extends StatelessWidget {
@@ -11,10 +12,11 @@ class PriceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartManager = context.watch<CartManager>();
+    final userManager = context.watch<UserManager>();
 
     final productsPrice = cartManager.productsPrice;
 
-    if (productsPrice != 0) {
+    if (userManager.isLoggedIn && productsPrice != 0) {
       return Card(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Padding(
