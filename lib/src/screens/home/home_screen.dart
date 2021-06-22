@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:loja_virtual/src/models/home_manager.dart';
 import 'package:loja_virtual/src/common/custom_drawer/custom_drawer.dart';
 
+import 'components/section_staggered.dart';
+
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,7 @@ class HomeScreen extends StatelessWidget {
                       case 'List':
                         return SectionList(section);
                       case 'Staggered':
-                        return Container();
+                        return SectionStaggered(section);
                       default:
                         return Container();
                     }
